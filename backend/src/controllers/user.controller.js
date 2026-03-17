@@ -1,7 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
-import crypto from "crypto";
-import bcrypt from "bcrypt"; 
+import crypto from "crypto"; 
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -24,7 +23,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, password } = req.body;
 
-  if ([fullName, email, password].some((field) => field?.trim() === "")) {
+  if ([fullName, email, password].some((field) => !field?.trim())) {
     return res
       .status(400)
       .json({ error: true, message: "All fields are required" });
@@ -119,67 +118,55 @@ const getUser = asyncHandler(async (req, res) => {
   });
 });
 
-export const forgotPassword = async (req, res) => {
+export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.json({ error: true, message: "User not found" });
-    }
-
-    const token = crypto.randomBytes(20).toString("hex");
-    user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000;
-    await user.save({ validateBeforeSave: false });
-
-    const resetUrl = `http://localhost:5173/reset-password/${token}`;
-
-    console.log("\n================ RESET LINK ================");
-    console.log(resetUrl);
-    console.log("============================================\n");
-
-    return res.json({ error: false, message: "Link sent to console!" });
-  } catch (error) {
-    console.log("Forgot Pass Error:", error);
-    return res
-      .status(500)
-      .json({ error: true, message: "Internal Server Error" });
+  const user = await User.findOne({ email });
+  if (!user) {
+    // Return generic message to prevent user enumeration
+    return res.json({ error: false, message: "If an account with that email exists, a reset link has been sent." });
   }
-};
 
-export const resetPassword = async (req, res) => {
+  const token = crypto.randomBytes(20).toString("hex");
+  user.resetPasswordToken = token;
+  user.resetPasswordExpires = Date.now() + 3600000;
+  await user.save({ validateBeforeSave: false });
+
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+  const resetUrl = `${frontendUrl}/reset-password/${token}`;
+
+  console.log("\n================ RESET LINK ================");
+  console.log(resetUrl);
+  console.log("============================================\n");
+
+  return res.json({ error: false, message: "Link sent to console!" });
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
   const { newPassword } = req.body;
 
-  try {
-    const user = await User.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() },
-    });
+  const user = await User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
 
-    if (!user) {
-      return res
-        .status(400)
-        .json({ error: true, message: "Invalid or expired token" });
-    }
-
-    user.password = newPassword;
-
-    // reset token clear
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
-
-    // save user
-    await user.save({ validateBeforeSave: false });
-
-    return res.json({ error: false, message: "Password reset successful!" });
-  } catch (error) {
-    console.log("Reset Pass Error:", error);
+  if (!user) {
     return res
-      .status(500)
-      .json({ error: true, message: "Internal Server Error" });
+      .status(400)
+      .json({ error: true, message: "Invalid or expired token" });
   }
-};
+
+  user.password = newPassword;
+
+  // reset token clear
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+
+  // save user — let the pre-save hook hash the password
+  await user.save();
+
+  return res.json({ error: false, message: "Password reset successful!" });
+});
 
 export { registerUser, loginUser, getUser };
