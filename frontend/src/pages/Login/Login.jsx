@@ -15,7 +15,9 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!validateEmail(email)) {
+    const trimmedEmail = email.trim();
+
+    if (!validateEmail(trimmedEmail)) {
       setError("Please enter a valid email address.");
       return;
     }
@@ -29,7 +31,7 @@ const Login = () => {
 
     try {
       const response = await axiosInstance.post("/users/login", {
-        email: email,
+        email: trimmedEmail,
         password: password,
       });
 

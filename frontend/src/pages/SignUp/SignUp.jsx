@@ -21,7 +21,9 @@ const SignUp = () => {
       return;
     }
 
-    if (!validateEmail(email)) {
+    const trimmedEmail = email.trim();
+
+    if (!validateEmail(trimmedEmail)) {
       setError("Please enter a valid email address.");
       return;
     }
@@ -36,7 +38,7 @@ const SignUp = () => {
     try {
       const response = await axiosInstance.post("/users/register", {
         fullName: name,
-        email: email,
+        email: trimmedEmail,
         password: password,
       });
 
@@ -47,7 +49,7 @@ const SignUp = () => {
 
       if (response.data && response.data.error === false) {
         const loginResponse = await axiosInstance.post("/users/login", {
-          email: email,
+          email: trimmedEmail,
           password: password,
         });
 
