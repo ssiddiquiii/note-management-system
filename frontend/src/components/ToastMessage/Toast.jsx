@@ -20,14 +20,12 @@ const Toast = ({ isShown, message, type, onClose }) => {
       }`}
     >
       <div
-        className={`min-w-52 bg-white border shadow-2xl rounded-md after:w-[5px] after:h-full ${
-          type === "delete" ? "after:bg-red-500" : "after:bg-green-500"
-        } after:absolute after:left-0 after:top-0 after:rounded-l-lg`}
+        className={`min-w-52 bg-[var(--bg-surface)] border border-[var(--border-color)] shadow-[var(--card-shadow)] rounded relative overflow-hidden`}
       >
-        <div className="flex items-center gap-3 py-2 px-4">
+        <div className="flex items-center gap-3 py-2 px-4 relative z-10">
           <div
             className={`w-10 h-10 flex items-center justify-center rounded-full ${
-              type === "delete" ? "bg-red-50" : "bg-green-50"
+              type === "delete" ? "bg-red-100" : "bg-green-100"
             }`}
           >
             {type === "delete" ? (
@@ -37,7 +35,7 @@ const Toast = ({ isShown, message, type, onClose }) => {
             )}
           </div>
 
-          <p className="text-sm text-slate-800">{message}</p>
+          <p className="text-sm font-medium text-[var(--text-primary)]">{message}</p>
         </div>
       </div>
     </div>

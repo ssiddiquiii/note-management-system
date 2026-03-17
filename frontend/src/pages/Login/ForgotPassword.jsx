@@ -30,12 +30,12 @@ const ForgotPassword = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-primary)] transition-colors duration-200 flex flex-col">
       <Navbar />
-      <div className="flex items-center justify-center h-[calc(100vh-80px)] bg-slate-50">
-        <div className="w-96 bg-white border rounded-2xl shadow-xl px-8 py-10">
+      <div className="flex flex-1 items-center justify-center">
+        <div className="w-96 border border-[var(--border-color)] bg-[var(--bg-surface)] rounded shadow-[var(--card-shadow)] px-8 py-10">
           <form onSubmit={handleSubmit}>
-            <h4 className="text-2xl font-bold mb-4">Forgot Password</h4>
+            <h4 className="text-2xl font-semibold mb-6">Forgot Password</h4>
             <input
               type="text"
               placeholder="Email"
@@ -43,17 +43,17 @@ const ForgotPassword = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+            {error && <p className="text-[var(--danger)] text-xs mt-2">{error}</p>}
             <button className="btn-primary mt-4 w-full">Send Link</button>
-            <div className="text-center mt-4">
-              <Link to="/login" className="text-sm text-blue-500 underline">
+            <div className="text-center mt-6">
+              <Link to="/login" className="text-sm font-medium text-[var(--accent)] underline hover:text-[var(--accent-hover)] transition-colors">
                 Back to Login
               </Link>
             </div>
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -4,26 +4,26 @@ import { IoMdClose } from "react-icons/io";
 
 const SearchBar = ({ value, onChange, handleSearch, onClearSearch }) => {
   return (
-    <div className="w-80 flex items-center px-4 bg-slate-50 border border-slate-200 rounded-full hover:shadow-sm transition-all duration-200 focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-100">
+    <div className="w-80 flex items-center px-3 bg-[var(--bg-surface)] border border-[var(--border-color)] rounded transition-colors focus-within:border-[var(--accent)] focus-within:shadow-[inset_0_0_0_1px_var(--accent)]">
+      <FaMagnifyingGlass 
+        className="text-[var(--text-secondary)] cursor-pointer hover:text-[var(--text-primary)]" 
+        onClick={handleSearch} 
+      />
+      
       <input
         type="text"
-        placeholder="Search Notes..."
-        className="w-full text-sm bg-transparent py-2.75 outline-none placeholder:text-slate-400 text-slate-700"
+        placeholder="Search notes..."
+        className="w-full text-sm bg-transparent py-2.5 px-3 outline-none text-[var(--text-primary)] placeholder-[var(--text-secondary)]"
         value={value}
         onChange={onChange}
       />
 
       {value && (
         <IoMdClose
-          className="text-xl text-slate-400 cursor-pointer hover:text-black mr-3 transition-colors"
+          className="text-lg text-[var(--text-secondary)] cursor-pointer hover:text-[var(--text-primary)] transition-colors"
           onClick={onClearSearch}
         />
       )}
-
-      <FaMagnifyingGlass
-        className="text-slate-400 cursor-pointer hover:text-blue-600 transition-colors"
-        onClick={handleSearch}
-      />
     </div>
   );
 };

@@ -1,54 +1,27 @@
-import React, { useState } from "react";
-import ProfileInfo from "../Cards/Profileinfo";
-import { useNavigate } from "react-router-dom";
-import SearchBar from "../SearchBar/SearchBar";
+import React from "react";
+import { useTheme } from "../../context/ThemeContext";
+import { MdOutlineLightMode, MdOutlineDarkMode } from "react-icons/md";
 
-const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
-
-  const onLogout = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
-
-  const handleSearch = () => {
-    if (searchQuery) {
-      onSearchNote(searchQuery);
-    }
-  };
-
-  const onClearSearch = () => {
-    setSearchQuery("");
-    handleClearSearch();
-  };
+const Navbar = () => {
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="bg-white flex items-center justify-between px-10 py-4 shadow-sm border-b border-slate-100 sticky top-0 z-50">
+    <div className="bg-[var(--bg-main)] flex items-center justify-between px-10 py-4 shadow-sm border-b border-[var(--border-color)] transition-colors duration-200 sticky top-0 z-50">
       {/* Logo Text Styling */}
-      <h2 className="text-2xl font-bold text-slate-800 tracking-tight">
-        Notes<span className="text-blue-600">.</span>
+      <h2 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+        Notion<span className="text-[var(--accent)]">.</span>
       </h2>
 
-      {userInfo && (
-        <>
-          <SearchBar
-            value={searchQuery}
-            onChange={({ target }) => {
-              setSearchQuery(target.value);
-              if (target.value === "") {
-                handleClearSearch();
-              }
-            }}
-            handleSearch={handleSearch}
-            onClearSearch={onClearSearch}
-          />
-
-          <ProfileInfo userInfo={userInfo} onLogout={onLogout} />
-        </>
-      )}
+      <button
+        onClick={toggleTheme}
+        className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] transition-colors"
+        aria-label="Toggle Theme"
+      >
+        {theme === "light" ? <MdOutlineDarkMode className="text-xl" /> : <MdOutlineLightMode className="text-xl" />}
+      </button>
     </div>
   );
 };
 
 export default Navbar;
+

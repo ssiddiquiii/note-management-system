@@ -43,6 +43,7 @@ const AddEditNotes = ({
 
   const editNote = async () => {
     const noteId = noteData._id;
+
     try {
       const response = await axiosInstance.put("/notes/edit-note/" + noteId, {
         title,
@@ -71,10 +72,12 @@ const AddEditNotes = ({
       setError("Please enter the title");
       return;
     }
+
     if (!content) {
       setError("Please enter the content");
       return;
     }
+
     setError("");
 
     if (type === "edit") {
@@ -84,51 +87,109 @@ const AddEditNotes = ({
     }
   };
 
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link", "image", "code-block"],
+      ["clean"],
+    ],
+  };
+
   return (
-    <div className="relative">
+    <div className="relative p-2 h-full flex flex-col">
       <button
-        className="w-10 h-10 rounded-full flex items-center justify-center absolute -top-3 -right-3 hover:bg-slate-50"
+        className="w-8 h-8 rounded-full flex items-center justify-center absolute -top-3 -right-3 hover:bg-[var(--bg-hover)] transition-colors"
         onClick={onClose}
       >
-        <MdClose className="text-xl text-slate-400" />
+        <MdClose className="text-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" />
       </button>
 
-      <div className="flex flex-col gap-2">
-        <label className="input-label">TITLE</label>
-        <input
-          type="text"
-          className="text-2xl text-slate-950 outline-none"
-          placeholder="Go to Gym at 5"
-          value={title}
-          onChange={({ target }) => setTitle(target.value)}
-        />
+      <div className="flex flex-col flex-1 h-full gap-4 mt-2">
+        <div className="flex flex-col gap-2">
+          <input
+            type="text"
+            className="text-3xl lg:text-4xl text-[var(--text-primary)] bg-transparent outline-none font-bold tracking-tight placeholder-[var(--text-secondary)] placeholder-opacity-50 transition-colors"
+            placeholder="Untitled"
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col flex-1 pb-4">
+          <ReactQuill
+            theme="snow"
+            value={content}
+            onChange={setContent}
+            modules={modules}
+            className="h-full mt-2 custom-quill-editor"
+            placeholder="Start writing your thoughts..."
+          />
+        </div>
+
+        <div className="mt-auto">
+          <label className="input-label mb-1 mt-6 block text-[var(--text-secondary)]">Tags</label>
+          <TagInput tags={tags} setTags={setTags} />
+        </div>
+
+        {error && <p className="text-[var(--danger)] text-xs pt-4">{error}</p>}
+
+        <button
+          className="btn-primary font-medium mt-4 p-3 transition-colors"
+          onClick={handleAddNote}
+        >
+          {type === "edit" ? "UPDATE" : "ADD"} NOTE
+        </button>
       </div>
 
-      <div className="flex flex-col gap-2 mt-4">
-        <label className="input-label">CONTENT</label>
-
-        <ReactQuill
-          theme="snow"
-          value={content}
-          onChange={setContent}
-          className="bg-white rounded-md h-44 pb-12"
-          placeholder="Write something amazing..."
-        />
-      </div>
-
-      <div className="mt-3">
-        <label className="input-label">TAGS</label>
-        <TagInput tags={tags} setTags={setTags} />
-      </div>
-
-      {error && <p className="text-red-500 text-xs pt-4">{error}</p>}
-
-      <button
-        className="btn-primary font-medium mt-5 p-3"
-        onClick={handleAddNote}
-      >
-        {type === "edit" ? "UPDATE" : "ADD"}
-      </button>
+      <style>{`
+        /* Notion-style Quill overrides */
+        .custom-quill-editor .ql-toolbar {
+          border: none !important;
+          border-bottom: 1px solid var(--border-color) !important;
+          background-color: var(--bg-surface) !important;
+          padding: 8px 0 !important;
+          margin-bottom: 1rem;
+          transition: background-color 0.2s, border-color 0.2s;
+        }
+        .custom-quill-editor .ql-container {
+          border: none !important;
+          font-family: 'Inter', sans-serif !important;
+          font-size: 15px !important;
+          height: 350px !important;
+        }
+        .custom-quill-editor .ql-editor {
+          padding: 0 !important;
+          color: var(--text-primary) !important;
+          min-height: 200px;
+        }
+        .custom-quill-editor .ql-editor.ql-blank::before {
+          color: var(--text-secondary) !important;
+          font-style: normal !important;
+          opacity: 0.6;
+          left: 0;
+        }
+        .custom-quill-editor .ql-stroke {
+          stroke: var(--text-secondary) !important;
+        }
+        .custom-quill-editor .ql-fill {
+          fill: var(--text-secondary) !important;
+        }
+        .custom-quill-editor .ql-picker-label {
+          color: var(--text-secondary) !important;
+        }
+        .custom-quill-editor .ql-picker-options {
+          background-color: var(--bg-surface) !important;
+          border: 1px solid var(--border-color) !important;
+          color: var(--text-primary) !important;
+        }
+      `}</style>
     </div>
   );
 };

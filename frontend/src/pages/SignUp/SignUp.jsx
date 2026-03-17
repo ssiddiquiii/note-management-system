@@ -72,20 +72,17 @@ const SignUp = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-primary)] transition-colors duration-200 flex flex-col">
       <Navbar />
 
-      <div className="flex items-center justify-center h-[calc(100vh-80px)] bg-slate-50">
-        <div className="w-96 bg-white border border-slate-100 rounded-2xl shadow-xl px-8 py-10 hover:shadow-2xl transition-shadow duration-300">
+      <div className="flex flex-1 items-center justify-center">
+        <div className="w-96 border border-[var(--border-color)] bg-[var(--bg-surface)] rounded shadow-[var(--card-shadow)] px-8 py-10">
           <form onSubmit={handleSignUp}>
-            <h4 className="text-3xl font-bold text-slate-800 mb-2">Join Us</h4>
-            <p className="text-slate-500 text-sm mb-7">
-              Create your account to start noting.
-            </p>
+            <h4 className="text-2xl font-semibold mb-6">Sign up</h4>
 
             <input
               type="text"
-              placeholder="Full Name"
+              placeholder="Name"
               className="input-box"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -93,7 +90,7 @@ const SignUp = () => {
 
             <input
               type="text"
-              placeholder="Email Address"
+              placeholder="Email"
               className="input-box"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -104,29 +101,22 @@ const SignUp = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            {error && (
-              <p className="text-red-500 text-xs font-medium pb-2 text-center">
-                {error}
-              </p>
-            )}
+            {error && <p className="text-[var(--danger)] text-xs pb-1">{error}</p>}
 
-            <button type="submit" className="btn-primary mt-2">
+            <button type="submit" className="btn-primary mt-4">
               Create Account
             </button>
 
-            <p className="text-sm text-center text-slate-600 mt-6">
+            <p className="text-sm text-center mt-6 text-[var(--text-secondary)]">
               Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-medium text-blue-600 hover:text-blue-800 hover:underline transition-all"
-              >
-                Login
+              <Link to="/login" className="font-medium text-[var(--accent)] underline hover:text-[var(--accent-hover)] transition-colors">
+                Log in
               </Link>
             </p>
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

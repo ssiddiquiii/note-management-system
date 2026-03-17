@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../components/Navbar/Navbar";
+import Sidebar from "../../components/Sidebar/Sidebar";
 import NoteCard from "../../components/Cards/NoteCard";
 import { MdAdd } from "react-icons/md";
 import AddEditNotes from "./AddEditNotes";
@@ -10,6 +10,7 @@ import Toast from "../../components/ToastMessage/Toast";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import AddNotesImg from "../../assets/add-notes.svg";
 import NoDataImg from "../../assets/no-data.svg";
+import SearchBar from "../../components/SearchBar/SearchBar";
 
 Modal.setAppElement("#root");
 
@@ -29,6 +30,7 @@ const Home = () => {
   const [allNotes, setAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
 
@@ -93,10 +95,11 @@ const Home = () => {
     }
   };
 
-  const onSearchNote = async (query) => {
+  const handleSearch = async () => {
+    if (!searchQuery) return;
     try {
       const response = await axiosInstance.get("/notes/search-notes", {
-        params: { query },
+        params: { query: searchQuery },
       });
 
       if (response.data && response.data.notes) {
@@ -106,6 +109,12 @@ const Home = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const onClearSearch = () => {
+    setSearchQuery("");
+    setIsSearch(false);
+    getAllNotes();
   };
 
   const updateIsPinned = async (noteData) => {
@@ -126,11 +135,6 @@ const Home = () => {
     }
   };
 
-  const handleClearSearch = () => {
-    setIsSearch(false);
-    getAllNotes();
-  };
-
   useEffect(() => {
     getUserInfo();
     getAllNotes();
@@ -138,97 +142,116 @@ const Home = () => {
   }, []);
 
   return (
-    <>
-      <Navbar
-        userInfo={userInfo}
-        onSearchNote={onSearchNote}
-        handleClearSearch={handleClearSearch}
-      />
+    <div className="flex bg-[var(--bg-main)] min-h-screen text-[var(--text-primary)] transition-colors duration-200">
+      <Sidebar userInfo={userInfo} />
 
-      <div className="container mx-auto">
-        {allNotes.length > 0 ? (
-          <div className="grid grid-cols-3 gap-4 mt-8">
-            {allNotes.map((item, index) => (
-              <NoteCard
-                key={item._id}
-                title={item.title}
-                date={item.createdOn}
-                content={item.content}
-                tags={item.tags}
-                isPinned={item.isPinned}
-                onEdit={() => handleEdit(item)}
-                onDelete={() => deleteNote(item)}
-                onPinNote={() => updateIsPinned(item)}
-              />
-            ))}
-          </div>
-        ) : (
-          <EmptyCard
-            imgSrc={isSearch ? NoDataImg : AddNotesImg}
-            message={
-              isSearch
-                ? `Oops! No notes found matching your search.`
-                : `Start creating your first note! Click the 'Add' button to jot down your thoughts, ideas, and reminders. Let's get started!`
-            }
-          />
-        )}
-      </div>
-
-      <button
-        className="w-16 h-16 flex items-center justify-center rounded-2xl bg-blue-600 hover:bg-blue-700 absolute right-10 bottom-10 transition-all shadow-lg hover:shadow-2xl hover:-translate-y-1"
-        onClick={() => {
-          setOpenAddEditModal({ isShown: true, type: "add", data: null });
-        }}
-      >
-        <MdAdd className="text-[32px] text-white" />
-      </button>
-
-      <Modal
-        isOpen={openAddEditModal.isShown}
-        onRequestClose={() => {}}
-        style={{
-          overlay: {
-            backgroundColor: "rgba(0,0,0,0.2)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          },
-          content: {
-            width: "40%",
-            inset: "auto",
-            maxHeight: "90%",
-            backgroundColor: "white",
-            borderRadius: "8px",
-            margin: "auto",
-            padding: "0",
-            border: "none",
-            overflow: "hidden",
-            marginTop: "60px"
-          },
-        }}
-        contentLabel=""
-        className=""
-      >
-        <div className="p-5 overflow-y-auto max-h-[80vh] scrollbar-hide">
-          <AddEditNotes
-            type={openAddEditModal.type}
-            noteData={openAddEditModal.data}
-            onClose={() => {
-              setOpenAddEditModal({ isShown: false, type: "add", data: null });
+      <main className="flex-1 px-12 py-10 relative">
+        <header className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">All Notes</h1>
+          
+          <SearchBar 
+            value={searchQuery} 
+            onChange={({ target }) => {
+              setSearchQuery(target.value);
+              if (target.value === "") {
+                onClearSearch();
+              }
             }}
-            getAllNotes={getAllNotes}
-            showToastMessage={showToastMessage}
+            handleSearch={handleSearch}
+            onClearSearch={onClearSearch}
           />
-        </div>
-      </Modal>
+        </header>
 
-      <Toast
-        isShown={showToastMsg.isShown}
-        message={showToastMsg.message}
-        type={showToastMsg.type}
-        onClose={handleCloseToast}
-      />
-    </>
+        <div className="container mx-auto">
+          {allNotes.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {allNotes.map((item, index) => (
+                <NoteCard
+                  key={item._id}
+                  title={item.title}
+                  date={item.createdAt}
+                  content={item.content}
+                  tags={item.tags}
+                  isPinned={item.isPinned}
+                  onEdit={() => handleEdit(item)}
+                  onDelete={() => deleteNote(item)}
+                  onPinNote={() => updateIsPinned(item)}
+                />
+              ))}
+            </div>
+          ) : (
+            <EmptyCard
+              imgSrc={isSearch ? NoDataImg : AddNotesImg}
+              message={
+                isSearch
+                  ? `Oops! No notes found matching your search.`
+                  : `Start creating your first note! Click the '+' button to jot down your thoughts, ideas, and reminders. Let's get started!`
+              }
+            />
+          )}
+        </div>
+
+        {/* Notion-style subtle add button */}
+        <button
+          className="fixed right-10 bottom-10 w-14 h-14 flex items-center justify-center rounded-full bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] transition-all shadow-[var(--card-shadow)] z-40"
+          onClick={() => {
+            setOpenAddEditModal({ isShown: true, type: "add", data: null });
+          }}
+        >
+          <MdAdd className="text-2xl" />
+        </button>
+
+        <Modal
+          isOpen={openAddEditModal.isShown}
+          onRequestClose={() => {}}
+          style={{
+            overlay: {
+              backgroundColor: "var(--modal-overlay)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 100,
+            },
+            content: {
+              width: "50%",
+              maxWidth: "800px",
+              minWidth: "400px",
+              inset: "auto",
+              maxHeight: "90%",
+              backgroundColor: "var(--bg-surface)",
+              color: "var(--text-primary)",
+              borderRadius: "8px",
+              margin: "auto",
+              padding: "0",
+              border: "1px solid var(--border-color)",
+              boxShadow: "var(--card-shadow)",
+              overflow: "hidden",
+            },
+          }}
+          contentLabel=""
+          className=""
+        >
+          <div className="p-8 overflow-y-auto max-h-[80vh] scrollbar-hide">
+            <AddEditNotes
+              type={openAddEditModal.type}
+              noteData={openAddEditModal.data}
+              onClose={() => {
+                setOpenAddEditModal({ isShown: false, type: "add", data: null });
+              }}
+              getAllNotes={getAllNotes}
+              showToastMessage={showToastMessage}
+            />
+          </div>
+        </Modal>
+
+        <Toast
+          isShown={showToastMsg.isShown}
+          message={showToastMsg.message}
+          type={showToastMsg.type}
+          onClose={handleCloseToast}
+        />
+      </main>
+    </div>
   );
 };
 

@@ -28,12 +28,12 @@ const ResetPassword = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-primary)] transition-colors duration-200 flex flex-col">
       <Navbar />
-      <div className="flex items-center justify-center h-[calc(100vh-80px)] bg-slate-50">
-        <div className="w-96 bg-white border rounded-2xl shadow-xl px-8 py-10">
+      <div className="flex flex-1 items-center justify-center">
+        <div className="w-96 border border-[var(--border-color)] bg-[var(--bg-surface)] rounded shadow-[var(--card-shadow)] px-8 py-10">
           <form onSubmit={handleSubmit}>
-            <h4 className="text-2xl font-bold mb-4">New Password</h4>
+            <h4 className="text-2xl font-semibold mb-6">New Password</h4>
             <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -42,7 +42,7 @@ const ResetPassword = () => {
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
