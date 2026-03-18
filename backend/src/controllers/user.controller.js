@@ -118,6 +118,8 @@ const getUser = asyncHandler(async (req, res) => {
   });
 });
 
+import { sendEmail } from "../utils/sendEmail.js";
+
 export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -135,11 +137,52 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
   const resetUrl = `${frontendUrl}/reset-password/${token}`;
 
-  console.log("\n================ RESET LINK ================");
-  console.log(resetUrl);
-  console.log("============================================\n");
+  const message = `You requested a password reset. Please click on this link to reset your password: \n\n ${resetUrl} \n\n This link expires in 1 hour.`;
+  const htmlMessage = `
+    <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; color: #37352f; background-color: #ffffff;">
+      <div style="text-align: center; margin-bottom: 32px;">
+        <svg width="48" height="48" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto;">
+          <rect width="256" height="256" rx="60" fill="#191919"/>
+          <path d="M88 64H168C176.837 64 184 71.1634 184 80V176C184 184.837 176.837 192 168 192H88C79.1634 192 72 184.837 72 176V80C72 71.1634 79.1634 64 88 64Z" fill="white"/>
+          <path d="M100 102H156M100 134H156M100 166H136" stroke="#191919" stroke-width="14" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2 style="font-size: 24px; font-weight: 700; color: #37352f; margin-bottom: 24px; text-align: center;">Reset your password</h2>
+      <p style="font-size: 16px; line-height: 1.5; color: #37352f; margin-bottom: 24px;">
+        We received a request to reset the password for your Notion Clone account. If you didn't make this request, you can safely ignore this email.
+      </p>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${resetUrl}" style="background-color: #2383e2; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; display: inline-block;">Reset Password</a>
+      </div>
+      <p style="font-size: 14px; color: #787774; margin-bottom: 24px; line-height: 1.5;">
+        Or copy and paste this link directly into your browser:<br>
+        <a href="${resetUrl}" style="color: #2383e2; text-decoration: none; word-break: break-all;">${resetUrl}</a>
+      </p>
+      <hr style="border: none; border-top: 1px solid #ededeb; margin: 32px 0;">
+      <p style="font-size: 12px; color: #787774; text-align: center; line-height: 1.5;">
+        This password reset link will expire in 1 hour.<br>
+        Notion Clone Support Team
+      </p>
+    </div>
+  `;
 
-  return res.json({ error: false, message: "Link sent to console!" });
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Password Reset Request - Notion Clone",
+      message: message,
+      htmlMessage: htmlMessage,
+    });
+
+    return res.json({ error: false, message: "Password reset email sent successfully!" });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    console.error("Email sending failed:", error);
+    return res.status(500).json({ error: true, message: "Email could not be sent. Please try again later." });
+  }
 });
 
 export const resetPassword = asyncHandler(async (req, res) => {
