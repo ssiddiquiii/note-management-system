@@ -9,6 +9,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,6 +29,7 @@ const Login = () => {
     }
 
     setError("");
+    setIsSubmitting(true);
 
     try {
       const response = await axiosInstance.post("/users/login", {
@@ -40,6 +42,7 @@ const Login = () => {
         navigate("/dashboard");
       }
     } catch (error) {
+      setIsSubmitting(false);
       if (
         error.response &&
         error.response.data &&
@@ -76,8 +79,8 @@ const Login = () => {
 
             {error && <p className="text-[var(--danger)] text-xs pb-1">{error}</p>}
 
-            <button type="submit" className="btn-primary mt-4">
-              Login
+            <button type="submit" className="btn-primary mt-4 disabled:opacity-70 disabled:cursor-not-allowed" disabled={isSubmitting}>
+              {isSubmitting ? "Logging in..." : "Login"}
             </button>
 
             <p className="text-sm text-center mt-4">

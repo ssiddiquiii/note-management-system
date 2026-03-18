@@ -26,45 +26,49 @@ const TagInput = ({ tags, setTags }) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-wrap items-center gap-2">
       {tags?.length > 0 && (
-        <div className="flex items-center gap-2 flex-wrap mt-2">
+        <div className="flex items-center gap-1.5 flex-wrap">
           {tags.map((tag, index) => (
             <span
               key={index}
-              className="flex items-center gap-2 text-xs text-[var(--text-primary)] bg-[var(--bg-hover)] px-2 py-1 rounded font-medium"
+              className="flex items-center gap-1 text-[13px] text-[var(--text-primary)] bg-[var(--bg-subtle)] px-2.5 py-1 rounded-sm border border-[var(--border-color)] font-medium"
             >
-              # {tag}
+              {tag}
               <button
                 onClick={() => {
                   handleRemoveTag(tag);
                 }}
+                className="hover:bg-[var(--border-color)] rounded-sm p-0.5 transition-colors"
+                title="Remove Tag"
               >
-                <MdClose className="text-sm opacity-60 hover:opacity-100 transition-opacity" />
+                <MdClose className="text-[14px] text-[var(--text-secondary)] hover:text-[var(--danger)] transition-colors" />
               </button>
             </span>
           ))}
         </div>
       )}
 
-      <div className="flex items-center gap-3 mt-4">
+      <div className="flex items-center bg-[var(--bg-hover)] rounded-sm px-2.5 py-1 focus-within:ring-1 focus-within:ring-[var(--border-color)] transition-all">
+        <MdAdd className="text-[16px] text-[var(--text-secondary)] mr-1.5" />
         <input
           type="text"
           value={inputValue}
-          className="text-sm bg-transparent border border-[var(--border-color)] px-3 py-2 rounded outline-none focus:border-[var(--accent)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] w-full max-w-40 transition-colors"
-          placeholder="Add tags"
+          className="text-[13px] bg-transparent border-none outline-none text-[var(--text-primary)] placeholder-[var(--text-secondary)] w-24 focus:w-32 transition-all placeholder-opacity-70"
+          placeholder="Add tag..."
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
         />
-
-        <button
-          className="w-9 h-9 flex items-center justify-center rounded border border-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors"
-          onClick={() => {
-            addNewTag();
-          }}
-        >
-          <MdAdd className="text-xl text-[var(--accent)] hover:text-white transition-colors" />
-        </button>
+        {inputValue.trim() !== "" && (
+          <button
+            className="ml-1 text-[11px] font-semibold text-[var(--accent)] hover:text-[var(--accent-hover)] px-1"
+            onClick={() => {
+              addNewTag();
+            }}
+          >
+            Add
+          </button>
+        )}
       </div>
     </div>
   );

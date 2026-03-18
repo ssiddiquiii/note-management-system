@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @layer base {
@@ -8,13 +8,15 @@
     --bg-surface: #ffffff;
     --bg-sidebar: #f7f7f5;
     --bg-hover: #efefed;
+    --bg-subtle: #fbfbfa;
     --text-primary: #37352f;
-    --text-secondary: #787774;
+    --text-secondary: rgba(55, 53, 47, 0.65);
     --border-color: #ededeb;
     --accent: #2383e2;
     --accent-hover: #0077d4;
     --danger: #eb5757;
     --card-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 2px 4px;
+    --card-shadow-hover: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 4px 8px;
     --modal-overlay: rgba(15, 15, 15, 0.6);
   }
 
@@ -24,6 +26,7 @@
     --bg-surface: #202020;
     --bg-sidebar: #202020;
     --bg-hover: #2f2f2f;
+    --bg-subtle: #252525;
     --text-primary: rgba(255, 255, 255, 0.81);
     --text-secondary: rgba(255, 255, 255, 0.44);
     --border-color: #2e2e2e;
@@ -31,6 +34,7 @@
     --accent-hover: #0077d4;
     --danger: #eb5757;
     --card-shadow: rgba(255, 255, 255, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.2) 0px 2px 4px;
+    --card-shadow-hover: rgba(255, 255, 255, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.4) 0px 4px 8px;
     --modal-overlay: rgba(0, 0, 0, 0.8);
   }
 
@@ -49,10 +53,10 @@
 @layer components {
   /* Common standard buttons */
   .btn-primary {
-    @apply w-full text-sm font-medium p-2.5 rounded 
-    transition-all duration-200 ease-in-out cursor-pointer;
+    @apply w-full text-sm font-medium px-3 py-2 rounded-md transition-all duration-200 ease-in-out cursor-pointer;
     background-color: var(--accent);
     color: #ffffff;
+    box-shadow: rgba(15, 15, 15, 0.1) 0px 1px 2px;
   }
 
   .btn-primary:hover {
@@ -61,10 +65,11 @@
 
   /* Inputs */
   .input-box {
-    @apply w-full text-sm px-3 py-2 rounded mb-4 outline-none transition-all duration-200;
-    background-color: transparent;
+    @apply w-full text-sm px-3 py-2 rounded-md mb-4 outline-none transition-all duration-200;
+    background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
+    box-shadow: rgba(15, 15, 15, 0.05) 0px 1px 2px;
   }
 
   .input-box:focus {
@@ -78,12 +83,13 @@
 
   /* Icons */
   .icon-btn {
-    @apply text-xl cursor-pointer transition-colors;
+    @apply text-xl flex items-center justify-center p-1 rounded-md cursor-pointer transition-colors duration-200;
     color: var(--text-secondary);
   }
 
   .icon-btn:hover {
     background-color: var(--bg-hover);
+    color: var(--text-primary);
   }
 
   /* Labels */
@@ -103,5 +109,5 @@
 }
 
 @theme {
-  /* Using standard tailwind arbitrary values where possible, but mapping key theme colors */
+  /* No custom mappings needed if relying on CSS variables in tailwind classes directly */
 }

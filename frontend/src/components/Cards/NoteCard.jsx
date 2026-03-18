@@ -14,59 +14,85 @@ const NoteCard = ({
   onPinNote,
 }) => {
   return (
-    
-    <div className="group border border-slate-200 rounded-2xl p-6 bg-white hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer hover:-translate-y-1">
-      <div className="flex items-center justify-between">
-        <div>
-          <h6 className="text-base font-bold text-slate-900 line-clamp-1">
-            {title}
-          </h6>
-          <span className="text-xs text-slate-500 font-medium mt-1 block">
-            {moment(date).format("Do MMM YYYY")}
-          </span>
+    <div 
+      className="relative group border border-[var(--border-color)] rounded-lg bg-[var(--bg-surface)] hover:shadow-[var(--card-shadow-hover)] transition-all duration-200 ease-in-out cursor-pointer flex flex-col h-full overflow-hidden"
+      onClick={onEdit}
+    >
+      
+      {/* Top Header Section */}
+      <div className="p-4 flex-1 flex flex-col">
+        <div className="flex items-start justify-between mb-2">
+          <div className="pr-12">
+            <h6 className="text-[16px] font-semibold text-[var(--text-primary)] leading-snug line-clamp-2">
+              {title}
+            </h6>
+          </div>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onPinNote();
+            }}
+            className={`absolute top-3 right-3 p-1.5 rounded-sm transition-colors z-20 ${
+              isPinned
+                ? "text-[var(--accent)] bg-[var(--bg-hover)]"
+                : "text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 hover:bg-[var(--bg-hover)]"
+            }`}
+            title={isPinned ? "Unpin Note" : "Pin Note"}
+          >
+            <MdOutlinePushPin className="text-[17px] rotate-45" />
+          </button>
         </div>
 
-        <MdOutlinePushPin
-          className={`icon-btn text-xl transition-all ${
-            isPinned
-              ? "text-blue-600 rotate-0"
-              : "text-slate-300 -rotate-45 hover:text-slate-500"
-          }`}
-          onClick={onPinNote}
+        <span className="text-[12px] text-[var(--text-secondary)] font-medium mb-3 block">
+          {moment(date).format("Do MMM YYYY")}
+        </span>
+
+        {/* Content Section */}
+        <div
+          className="text-[14px] text-[var(--text-secondary)] leading-relaxed line-clamp-3 mb-4 flex-1"
+          dangerouslySetInnerHTML={{ __html: content }}
         />
+        
+        {/* Tags Section */}
+        {tags && tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-auto pt-2">
+            {tags.map((item, index) => (
+              <span
+                key={index}
+                className="text-[11px] font-medium text-[var(--text-primary)] bg-[var(--bg-subtle)] px-2 py-0.5 rounded-sm border border-[var(--border-color)]"
+              >
+                #{item}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Content Section */}
-      <div
-        className="text-sm text-slate-600 mt-4 leading-relaxed line-clamp-3"
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
-
-      {/* Footer Section */}
-      <div className="flex items-center justify-between mt-5">
-        <div className="flex flex-wrap gap-1">
-          {tags.map((item, index) => (
-            <span
-              key={index}
-              className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full"
-            >
-              #{item}
-            </span>
-          ))}
-        </div>
-
-        {/* Action Buttons*/}
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <MdCreate
-            className="icon-btn text-slate-400 hover:text-green-600 text-lg transition-colors cursor-pointer"
-            onClick={onEdit}
-          />
-          <MdDelete
-            className="icon-btn text-slate-400 hover:text-red-500 text-lg transition-colors cursor-pointer"
-            onClick={onDelete}
-          />
-        </div>
+      {/* Action Bar */}
+      <div className="absolute bottom-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[var(--bg-surface)] p-1 rounded-md shadow-sm border border-[var(--border-color)] z-10">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit();
+          }}
+          className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] rounded-sm transition-colors"
+          title="Edit"
+        >
+          <MdCreate className="text-[16px]" />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--danger)] hover:bg-[var(--bg-hover)] rounded-sm transition-colors"
+          title="Delete"
+        >
+          <MdDelete className="text-[16px]" />
+        </button>
       </div>
+      
     </div>
   );
 };

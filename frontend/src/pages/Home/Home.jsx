@@ -75,7 +75,7 @@ const Home = () => {
         setAllNotes(response.data.notes);
       }
     } catch (error) {
-      console.log("An unexpected error occurred. Please try again.");
+      showToastMessage("An unexpected error occurred. Please try again.", "error");
     }
   };
 
@@ -91,7 +91,7 @@ const Home = () => {
         getAllNotes();
       }
     } catch (error) {
-      console.log("An unexpected error occurred. Please try again.");
+      showToastMessage("Failed to delete note. Please try again.", "error");
     }
   };
 
@@ -107,7 +107,7 @@ const Home = () => {
         setAllNotes(response.data.notes);
       }
     } catch (error) {
-      console.log(error);
+      showToastMessage("Search failed. Please try again.", "error");
     }
   };
 
@@ -127,11 +127,14 @@ const Home = () => {
         },
       );
       if (response.data && response.data.note) {
-        showToastMessage("Note Pinned Successfully");
+        showToastMessage(
+          noteData.isPinned ? "Note Unpinned Successfully" : "Note Pinned Successfully",
+          "add"
+        );
         getAllNotes();
       }
     } catch (error) {
-      console.log(error);
+      showToastMessage("Failed to update note. Please try again.", "error");
     }
   };
 
@@ -142,63 +145,71 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex bg-[var(--bg-main)] min-h-screen text-[var(--text-primary)] transition-colors duration-200">
+    <div className="flex bg-[var(--bg-main)] min-h-screen text-[var(--text-primary)] transition-colors duration-200 selection:bg-blue-200 selection:text-black dark:selection:bg-blue-900 dark:selection:text-white">
       <Sidebar userInfo={userInfo} />
 
-      <main className="flex-1 px-12 py-10 relative">
-        <header className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">All Notes</h1>
-          
-          <SearchBar 
-            value={searchQuery} 
-            onChange={({ target }) => {
-              setSearchQuery(target.value);
-              if (target.value === "") {
-                onClearSearch();
-              }
-            }}
-            handleSearch={handleSearch}
-            onClearSearch={onClearSearch}
-          />
-        </header>
-
-        <div className="container mx-auto">
-          {allNotes.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {allNotes.map((item, index) => (
-                <NoteCard
-                  key={item._id}
-                  title={item.title}
-                  date={item.createdAt}
-                  content={item.content}
-                  tags={item.tags}
-                  isPinned={item.isPinned}
-                  onEdit={() => handleEdit(item)}
-                  onDelete={() => deleteNote(item)}
-                  onPinNote={() => updateIsPinned(item)}
-                />
-              ))}
+      <main className="flex-1 relative overflow-y-auto">
+        <div className="max-w-5xl mx-auto w-full px-12 py-16">
+          <header className="flex flex-col md:flex-row md:justify-between items-start md:items-end mb-10 gap-6 border-b border-[var(--border-color)] pb-6">
+            <h1 className="text-[40px] font-bold leading-tight tracking-tight text-[var(--text-primary)]">
+              All Notes
+            </h1>
+            
+            <div className="w-full md:w-auto">
+              <SearchBar 
+                value={searchQuery} 
+                onChange={({ target }) => {
+                  setSearchQuery(target.value);
+                  if (target.value === "") {
+                    onClearSearch();
+                  }
+                }}
+                handleSearch={handleSearch}
+                onClearSearch={onClearSearch}
+              />
             </div>
-          ) : (
-            <EmptyCard
-              imgSrc={isSearch ? NoDataImg : AddNotesImg}
-              message={
-                isSearch
-                  ? `Oops! No notes found matching your search.`
-                  : `Start creating your first note! Click the '+' button to jot down your thoughts, ideas, and reminders. Let's get started!`
-              }
-            />
-          )}
+          </header>
+
+          <div className="w-full">
+            {allNotes.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {allNotes.map((item, index) => (
+                  <NoteCard
+                    key={item._id}
+                    title={item.title}
+                    date={item.createdAt}
+                    content={item.content}
+                    tags={item.tags}
+                    isPinned={item.isPinned}
+                    onEdit={() => handleEdit(item)}
+                    onDelete={() => deleteNote(item)}
+                    onPinNote={() => updateIsPinned(item)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="mt-20">
+                <EmptyCard
+                  imgSrc={isSearch ? NoDataImg : AddNotesImg}
+                  message={
+                    isSearch
+                      ? `Oops! No notes found matching your search.`
+                      : `Start creating your first note! Click the '+' button to jot down your thoughts, ideas, and reminders. Let's get started!`
+                  }
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Notion-style subtle add button */}
         <button
-          className="fixed right-10 bottom-10 w-14 h-14 flex items-center justify-center rounded-full bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] transition-all shadow-[var(--card-shadow)] z-40"
+          className="fixed right-10 bottom-10 w-12 h-12 flex items-center justify-center rounded-full bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] transition-all shadow-[var(--card-shadow-hover)] z-40 active:scale-95"
           onClick={() => {
             setOpenAddEditModal({ isShown: true, type: "add", data: null });
           }}
         >
-          <MdAdd className="text-2xl" />
+          <MdAdd className="text-[26px]" />
         </button>
 
         <Modal
@@ -213,25 +224,25 @@ const Home = () => {
               zIndex: 100,
             },
             content: {
-              width: "50%",
-              maxWidth: "800px",
-              minWidth: "400px",
+              width: "100%",
+              maxWidth: "700px",
+              minWidth: "320px",
               inset: "auto",
-              maxHeight: "90%",
+              maxHeight: "85vh",
               backgroundColor: "var(--bg-surface)",
               color: "var(--text-primary)",
-              borderRadius: "8px",
+              borderRadius: "12px",
               margin: "auto",
               padding: "0",
               border: "1px solid var(--border-color)",
-              boxShadow: "var(--card-shadow)",
+              boxShadow: "var(--card-shadow-hover)",
               overflow: "hidden",
             },
           }}
           contentLabel=""
-          className=""
+          className="outline-none"
         >
-          <div className="p-8 overflow-y-auto max-h-[80vh] scrollbar-hide">
+          <div className="p-8 overflow-y-auto max-h-[85vh] scrollbar-hide w-full">
             <AddEditNotes
               type={openAddEditModal.type}
               noteData={openAddEditModal.data}
@@ -255,4 +266,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Home;

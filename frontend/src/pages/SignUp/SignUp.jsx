@@ -10,6 +10,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -34,6 +35,7 @@ const SignUp = () => {
     }
 
     setError("");
+    setIsSubmitting(true);
 
     try {
       const response = await axiosInstance.post("/users/register", {
@@ -44,6 +46,7 @@ const SignUp = () => {
 
       if (response.data && response.data.error) {
         setError(response.data.message);
+        setIsSubmitting(false);
         return;
       }
 
@@ -59,6 +62,7 @@ const SignUp = () => {
         }
       }
     } catch (error) {
+      setIsSubmitting(false);
       if (
         error.response &&
         error.response.data &&
@@ -103,8 +107,8 @@ const SignUp = () => {
 
             {error && <p className="text-[var(--danger)] text-xs pb-1">{error}</p>}
 
-            <button type="submit" className="btn-primary mt-4">
-              Create Account
+            <button type="submit" className="btn-primary mt-4 disabled:opacity-70 disabled:cursor-not-allowed" disabled={isSubmitting}>
+              {isSubmitting ? "Creating Account..." : "Create Account"}
             </button>
 
             <p className="text-sm text-center mt-6 text-[var(--text-secondary)]">
