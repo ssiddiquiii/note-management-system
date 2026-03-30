@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000/api/v1", // Backend ka address
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1", // Defaults to localhost for dev
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
