@@ -7,7 +7,7 @@ describe("🏷️ TagInput Component", () => {
     const setTags = jest.fn();
     render(<TagInput tags={[]} setTags={setTags} />);
 
-    const input = screen.getByPlaceholderText(/Add tags/i);
+    const input = screen.getByPlaceholderText(/Add tag/i);
 
     // Type 'React' and press Enter
     fireEvent.change(input, { target: { value: "React" } });

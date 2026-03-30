@@ -4,7 +4,6 @@ import NoteCard from "./NoteCard";
 import "@testing-library/jest-dom";
 
 describe("📝 NoteCard Component Tests", () => {
-  //  FIX: Date ko valid ISO format mein diya hai
   const mockNote = {
     title: "Project Alpha",
     date: "2026-02-10",
@@ -39,10 +38,10 @@ describe("📝 NoteCard Component Tests", () => {
       screen.getByText("Deploying MERN stack app to production."),
     ).toBeInTheDocument();
 
-    // Tag check
-    expect(screen.getByText("#work")).toBeInTheDocument();
+    // Tag check — tags now render without # prefix
+    expect(screen.getByText("work")).toBeInTheDocument();
 
-    //  DATE CHECK: Moment '2026-02-10' ko '10th Feb 2026' banayega
+    // DATE CHECK: Moment '2026-02-10' renders as '10th Feb 2026'
     expect(screen.getByText("10th Feb 2026")).toBeInTheDocument();
   });
 });

@@ -1,103 +1,242 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 @layer base {
   :root {
-    /* Light Mode (Notion default) */
-    --bg-main: #ffffff;
+    /* Light Mode — Premium palette */
+    --bg-main: #fafafa;
     --bg-surface: #ffffff;
-    --bg-sidebar: #f7f7f5;
-    --bg-hover: #efefed;
-    --bg-subtle: #fbfbfa;
-    --text-primary: #37352f;
-    --text-secondary: rgba(55, 53, 47, 0.65);
-    --border-color: #ededeb;
-    --accent: #2383e2;
-    --accent-hover: #0077d4;
-    --danger: #eb5757;
-    --card-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 2px 4px;
-    --card-shadow-hover: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 4px 8px;
-    --modal-overlay: rgba(15, 15, 15, 0.6);
+    --bg-sidebar: #f5f5f4;
+    --bg-hover: #eeeeec;
+    --bg-subtle: #f8f8f7;
+    --bg-card: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: rgba(55, 53, 47, 0.55);
+    --border-color: #e8e8e6;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --accent-light: rgba(99, 102, 241, 0.08);
+    --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+    --accent-gradient-subtle: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.08) 100%);
+    --danger: #ef4444;
+    --danger-light: rgba(239, 68, 68, 0.08);
+    --success: #22c55e;
+    --success-light: rgba(34, 197, 94, 0.08);
+    --warning: #f59e0b;
+    --warning-light: rgba(245, 158, 11, 0.08);
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.06), 0 4px 10px rgba(0, 0, 0, 0.04);
+    --modal-overlay: rgba(0, 0, 0, 0.5);
+    --glow-color: rgba(99, 102, 241, 0.25);
+    --toast-progress: #6366f1;
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 0px;
+    --auth-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --auth-bg-pattern: radial-gradient(circle at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 50%),
+                       radial-gradient(circle at 80% 20%, rgba(139,92,246,0.06) 0%, transparent 50%),
+                       radial-gradient(circle at 40% 80%, rgba(167,139,250,0.04) 0%, transparent 50%);
   }
 
   [data-theme="dark"] {
-    /* Dark Mode (Notion dark) */
-    --bg-main: #191919;
-    --bg-surface: #202020;
-    --bg-sidebar: #202020;
-    --bg-hover: #2f2f2f;
-    --bg-subtle: #252525;
-    --text-primary: rgba(255, 255, 255, 0.81);
-    --text-secondary: rgba(255, 255, 255, 0.44);
-    --border-color: #2e2e2e;
-    --accent: #2383e2;
-    --accent-hover: #0077d4;
-    --danger: #eb5757;
-    --card-shadow: rgba(255, 255, 255, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.2) 0px 2px 4px;
-    --card-shadow-hover: rgba(255, 255, 255, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.4) 0px 4px 8px;
-    --modal-overlay: rgba(0, 0, 0, 0.8);
+    /* Dark Mode — High-contrast premium dark */
+    --bg-main: #101014;
+    --bg-surface: #1e1e26;
+    --bg-sidebar: #161620;
+    --bg-hover: #2c2c38;
+    --bg-subtle: #242430;
+    --bg-card: #1e1e26;
+    --text-primary: rgba(255, 255, 255, 0.95);
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --border-color: rgba(255, 255, 255, 0.12);
+    --accent: #a5b4fc;
+    --accent-hover: #818cf8;
+    --accent-light: rgba(165, 180, 252, 0.18);
+    --accent-gradient: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #c4b5fd 100%);
+    --accent-gradient-subtle: linear-gradient(135deg, rgba(129,140,248,0.16) 0%, rgba(167,139,250,0.16) 100%);
+    --danger: #fca5a5;
+    --danger-light: rgba(252, 165, 165, 0.15);
+    --success: #86efac;
+    --success-light: rgba(134, 239, 172, 0.15);
+    --warning: #fde68a;
+    --warning-light: rgba(253, 230, 138, 0.15);
+    --card-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.07);
+    --card-shadow-hover: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.1);
+    --modal-overlay: rgba(0, 0, 0, 0.75);
+    --glow-color: rgba(165, 180, 252, 0.4);
+    --toast-progress: #a5b4fc;
+    --auth-gradient: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
   }
 
   html {
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     background-color: var(--bg-main);
     color: var(--text-primary);
     overflow-x: hidden;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  /* Selection styling */
+  ::selection {
+    background-color: var(--accent-light);
+    color: var(--text-primary);
   }
 }
 
+/* ============================
+   Keyframe Animations
+   ============================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--glow-color); }
+  50% { box-shadow: 0 0 0 8px transparent; }
+}
+
+@keyframes progressBar {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 @layer components {
-  /* Common standard buttons */
+  /* ============================
+     Buttons
+     ============================ */
   .btn-primary {
-    @apply w-full text-sm font-medium px-3 py-2 rounded-md transition-all duration-200 ease-in-out cursor-pointer;
-    background-color: var(--accent);
+    @apply w-full text-sm font-semibold px-4 py-2.5 rounded-lg transition-all duration-200 ease-in-out cursor-pointer;
+    background: var(--accent-gradient);
     color: #ffffff;
-    box-shadow: rgba(15, 15, 15, 0.1) 0px 1px 2px;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+    position: relative;
+    overflow: hidden;
   }
 
   .btn-primary:hover {
-    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
   }
 
-  /* Inputs */
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  /* ============================
+     Inputs
+     ============================ */
   .input-box {
-    @apply w-full text-sm px-3 py-2 rounded-md mb-4 outline-none transition-all duration-200;
-    background-color: var(--bg-surface);
+    @apply w-full text-sm px-4 py-2.5 rounded-lg mb-4 outline-none transition-all duration-200;
+    background-color: var(--bg-subtle);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    box-shadow: rgba(15, 15, 15, 0.05) 0px 1px 2px;
   }
 
   .input-box:focus {
     border-color: var(--accent);
-    box-shadow: inset 0 0 0 1px var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
   }
 
   .input-box::placeholder {
     color: var(--text-secondary);
   }
 
-  /* Icons */
+  /* ============================
+     Icons
+     ============================ */
   .icon-btn {
-    @apply text-xl flex items-center justify-center p-1 rounded-md cursor-pointer transition-colors duration-200;
+    @apply text-xl flex items-center justify-center p-1.5 rounded-lg cursor-pointer transition-all duration-200;
     color: var(--text-secondary);
   }
 
   .icon-btn:hover {
     background-color: var(--bg-hover);
     color: var(--text-primary);
+    transform: scale(1.05);
   }
 
-  /* Labels */
+  /* ============================
+     Labels
+     ============================ */
   .input-label {
     @apply text-xs font-semibold uppercase tracking-wider mb-1;
     color: var(--text-secondary);
   }
 
+  /* ============================
+     Scrollbar
+     ============================ */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -106,6 +245,117 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* ============================
+     Glass Card
+     ============================ */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+  }
+
+  [data-theme="dark"] .glass-card {
+    background: rgba(26, 26, 26, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* ============================
+     Card Hover Lift
+     ============================ */
+  .card-hover-lift {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .card-hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+  }
+
+  /* ============================
+     Auth Gradient Background
+     ============================ */
+  .auth-gradient-bg {
+    position: relative;
+    /* Separated background from pattern to prevent transition lag */
+  }
+
+  .auth-gradient-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--auth-bg-pattern);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ============================
+     Animation Utilities
+     ============================ */
+  .animate-fadeInUp {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+
+  .animate-slideInRight {
+    animation: slideInRight 0.4s ease-out forwards;
+  }
+
+  .animate-slideInDown {
+    animation: slideInDown 0.3s ease-out forwards;
+  }
+
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .animate-scaleIn {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  .animate-pulseGlow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  /* ============================
+     Gradient Text
+     ============================ */
+  .gradient-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ============================
+     Accent Strip on Cards
+     ============================ */
+  .accent-strip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 4px 0 0 4px;
+  }
+
+  /* ============================
+     Stagger animation delays
+     ============================ */
+  .stagger-1 { animation-delay: 0.05s; }
+  .stagger-2 { animation-delay: 0.1s; }
+  .stagger-3 { animation-delay: 0.15s; }
+  .stagger-4 { animation-delay: 0.2s; }
+  .stagger-5 { animation-delay: 0.25s; }
+  .stagger-6 { animation-delay: 0.3s; }
 }
 
 @theme {

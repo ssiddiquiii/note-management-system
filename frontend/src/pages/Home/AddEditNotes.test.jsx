@@ -33,20 +33,15 @@ describe("✏️ AddEditNotes Component Tests", () => {
       />,
     );
 
-    // 👇 FIXED: "ADD NOTE" header missing tha, isliye hum "TITLE" label check kar rahe hain
-    expect(screen.getByText("TITLE")).toBeInTheDocument();
-    expect(screen.getByText("CONTENT")).toBeInTheDocument();
-    expect(screen.getByText("TAGS")).toBeInTheDocument();
-
     // Title Input check
-    const titleInput = screen.getByPlaceholderText(/Go to Gym at 5/i);
+    const titleInput = screen.getByPlaceholderText(/Untitled/i);
     expect(titleInput).toBeInTheDocument();
 
-    // Content Input
+    // Content Input (Quill mock)
     expect(screen.getByPlaceholderText("Content")).toBeInTheDocument();
 
-    // Add Button check
-    expect(screen.getByRole("button", { name: /ADD/i })).toBeInTheDocument();
+    // Create Note button check
+    expect(screen.getByRole("button", { name: /Create Note/i })).toBeInTheDocument();
   });
 
   test("✅ Should show error if Title is empty on submit", () => {
@@ -59,7 +54,7 @@ describe("✏️ AddEditNotes Component Tests", () => {
       />,
     );
 
-    const addBtn = screen.getByRole("button", { name: /ADD/i });
+    const addBtn = screen.getByRole("button", { name: /Create Note/i });
     fireEvent.click(addBtn);
 
     // Error Message Check

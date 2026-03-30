@@ -8,11 +8,16 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import Toast from "../../components/ToastMessage/Toast";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
-import AddNotesImg from "../../assets/add-notes.svg";
-import NoDataImg from "../../assets/no-data.svg";
 import SearchBar from "../../components/SearchBar/SearchBar";
 
 Modal.setAppElement("#root");
+
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+};
 
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -31,6 +36,7 @@ const Home = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const navigate = useNavigate();
 
@@ -144,57 +150,104 @@ const Home = () => {
     return () => {};
   }, []);
 
+  const firstName = userInfo?.fullName?.split(" ")[0] || "";
+  const pinnedCount = allNotes.filter(n => n.isPinned).length;
+
+  // Filter notes based on active sidebar filter
+  const getFilteredNotes = () => {
+    switch (activeFilter) {
+      case "pinned":
+        return allNotes.filter(n => n.isPinned);
+      case "recent":
+        return [...allNotes]
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 10);
+      default:
+        return allNotes;
+    }
+  };
+  const filteredNotes = getFilteredNotes();
+
+  const filterLabels = { all: "All Notes", pinned: "Pinned Notes", recent: "Recent Notes" };
+
   return (
-    <div className="flex bg-[var(--bg-main)] min-h-screen text-[var(--text-primary)] transition-colors duration-200 selection:bg-blue-200 selection:text-black dark:selection:bg-blue-900 dark:selection:text-white">
-      <Sidebar userInfo={userInfo} />
+    <div className="flex bg-[var(--bg-main)] min-h-screen text-[var(--text-primary)] transition-colors duration-150 ease-in-out">
+      <Sidebar userInfo={userInfo} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
 
       <main className="flex-1 relative overflow-y-auto">
-        <div className="max-w-5xl mx-auto w-full px-12 py-16">
-          <header className="flex flex-col md:flex-row md:justify-between items-start md:items-end mb-10 gap-6 border-b border-[var(--border-color)] pb-6">
-            <h1 className="text-[40px] font-bold leading-tight tracking-tight text-[var(--text-primary)]">
-              All Notes
-            </h1>
-            
-            <div className="w-full md:w-auto">
-              <SearchBar 
-                value={searchQuery} 
-                onChange={({ target }) => {
-                  setSearchQuery(target.value);
-                  if (target.value === "") {
-                    onClearSearch();
-                  }
-                }}
-                handleSearch={handleSearch}
-                onClearSearch={onClearSearch}
-              />
+        <div className="max-w-5xl mx-auto w-full px-8 md:px-12 py-10 md:py-14">
+          {/* Greeting Header */}
+          <header className="mb-10 animate-fadeInUp">
+            <div className="flex flex-col md:flex-row md:justify-between items-start md:items-end gap-6 pb-6 border-b border-[var(--border-color)]">
+              <div>
+                <h1 className="text-3xl md:text-[36px] font-bold leading-tight tracking-tight text-[var(--text-primary)]">
+                  {activeFilter === "all" ? (<>{getGreeting()}{firstName ? `, ${firstName}` : ""} 👋</>) : filterLabels[activeFilter]}
+                </h1>
+                {/* Stats bar */}
+                <div className="flex items-center gap-4 mt-3">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)]">
+                    <span className="w-2 h-2 rounded-full bg-[var(--accent)]"></span>
+                    {allNotes.length} {allNotes.length === 1 ? 'note' : 'notes'}
+                  </span>
+                  {pinnedCount > 0 && (
+                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)]">
+                      <span className="w-2 h-2 rounded-full bg-[var(--warning)]"></span>
+                      {pinnedCount} pinned
+                    </span>
+                  )}
+                </div>
+              </div>
+              
+              <div className="w-full md:w-auto">
+                <SearchBar 
+                  value={searchQuery} 
+                  onChange={({ target }) => {
+                    setSearchQuery(target.value);
+                    if (target.value === "") {
+                      onClearSearch();
+                    }
+                  }}
+                  handleSearch={handleSearch}
+                  onClearSearch={onClearSearch}
+                />
+              </div>
             </div>
           </header>
 
           <div className="w-full">
-            {allNotes.length > 0 ? (
+            {filteredNotes.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {allNotes.map((item, index) => (
-                  <NoteCard
-                    key={item._id}
-                    title={item.title}
-                    date={item.createdAt}
-                    content={item.content}
-                    tags={item.tags}
-                    isPinned={item.isPinned}
-                    onEdit={() => handleEdit(item)}
-                    onDelete={() => deleteNote(item)}
-                    onPinNote={() => updateIsPinned(item)}
-                  />
+                {filteredNotes.map((item, index) => (
+                  <div 
+                    key={item._id} 
+                    className="animate-fadeInUp opacity-0"
+                    style={{ animationDelay: `${index * 0.05}s`, animationFillMode: 'forwards' }}
+                  >
+                    <NoteCard
+                      title={item.title}
+                      date={item.createdAt}
+                      content={item.content}
+                      tags={item.tags}
+                      isPinned={item.isPinned}
+                      onEdit={() => handleEdit(item)}
+                      onDelete={() => deleteNote(item)}
+                      onPinNote={() => updateIsPinned(item)}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (
-              <div className="mt-20">
+              <div className="mt-10">
                 <EmptyCard
-                  imgSrc={isSearch ? NoDataImg : AddNotesImg}
+                  isSearch={isSearch || activeFilter !== "all"}
                   message={
                     isSearch
                       ? `Oops! No notes found matching your search.`
-                      : `Start creating your first note! Click the '+' button to jot down your thoughts, ideas, and reminders. Let's get started!`
+                      : activeFilter === "pinned"
+                        ? `No pinned notes yet. Pin important notes to find them quickly!`
+                        : activeFilter === "recent"
+                          ? `No recent notes found.`
+                          : `Start creating your first note! Click the '+' button to jot down your thoughts, ideas, and reminders. Let's get started!`
                   }
                 />
               </div>
@@ -202,14 +255,16 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Notion-style subtle add button */}
+        {/* FAB Add button */}
         <button
-          className="fixed right-10 bottom-10 w-12 h-12 flex items-center justify-center rounded-full bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] transition-all shadow-[var(--card-shadow-hover)] z-40 active:scale-95"
+          data-fab-add
+          className="fixed right-8 bottom-8 w-13 h-13 flex items-center justify-center rounded-2xl text-white shadow-lg hover:shadow-xl transition-all duration-300 z-40 active:scale-90 animate-pulseGlow"
+          style={{ background: 'var(--accent-gradient)' }}
           onClick={() => {
             setOpenAddEditModal({ isShown: true, type: "add", data: null });
           }}
         >
-          <MdAdd className="text-[26px]" />
+          <MdAdd className="text-[28px]" />
         </button>
 
         <Modal
@@ -222,6 +277,7 @@ const Home = () => {
               alignItems: "center",
               justifyContent: "center",
               zIndex: 100,
+              backdropFilter: "blur(4px)",
             },
             content: {
               width: "100%",
@@ -231,7 +287,7 @@ const Home = () => {
               maxHeight: "85vh",
               backgroundColor: "var(--bg-surface)",
               color: "var(--text-primary)",
-              borderRadius: "12px",
+              borderRadius: "16px",
               margin: "auto",
               padding: "0",
               border: "1px solid var(--border-color)",
@@ -266,4 +322,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Home;
