@@ -42,7 +42,21 @@ import noteRouter from "./routes/note.route.js";
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/notes", noteRouter);
 
-// 5. Global Error Handler (MUST be the LAST middleware)
+import path from "path";
+import { fileURLToPath } from "url";
+
+// 5. Serve React Frontend (For Production Deployment on Render)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const buildPath = path.join(__dirname, "../dist");
+
+app.use(express.static(buildPath));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(buildPath, "index.html"));
+});
+
+// 6. Global Error Handler (MUST be the LAST middleware)
 app.use(errorHandler);
 
 export { app };
